@@ -25,7 +25,6 @@ public class GetInfoTask extends AsyncTask<String, Void, String>{
         getFacts,
         getAttacks,
         getHowTo,
-        getSave,
         getWallpaper
     }
     SourceType type;
@@ -89,9 +88,6 @@ public class GetInfoTask extends AsyncTask<String, Void, String>{
                 case getHowTo:
                     ((HowToActivity) parent).onTaskFinish(this, data);
                     break;
-                case getSave:
-                    ((SaveActivity) parent).onTaskFinish(this, data);
-                    break;
                 case getWallpaper:
                     ((WallpaperActivity) parent).onTaskFinish(this, data);
                     break;
@@ -119,9 +115,6 @@ public class GetInfoTask extends AsyncTask<String, Void, String>{
                 break;
             case getHowTo:
                 str = "http://sharkbytes.co/attacks.php";
-                break;
-            case getSave:
-                str = "http://sharkbytes.co/save.php";
                 break;
             case getWallpaper:
                 str = "http://sharkbytes.co/gallery_imagelist.php";

@@ -30,14 +30,14 @@ public class AttackActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attack);
-        this.setTitle("Recent Shark Attacks");
+        this.setTitle(R.string.incidents_main_text);
         
         attackLayout = (LinearLayout) findViewById(R.id.attackLayout);
 
         // GoogleAnalytics, log screen and view
         if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getApplicationContext()) == ConnectionResult.SUCCESS) {
             Tracker t = ((Global) getApplication()).getTracker(Global.TrackerName.APP_TRACKER);
-            t.setScreenName("Recent Attacks Screen");
+            t.setScreenName("Recent Shark Incidents");
             t.send(new HitBuilders.AppViewBuilder().build());
         }
       
@@ -51,8 +51,8 @@ public class AttackActivity extends Activity {
 	}
 	
 	@Override
-	protected void onResume() {
-		super.onResume();
+	protected void onStart() {
+		super.onStart();
 		
 		//AdMob
 		if (adView != null) {
@@ -61,7 +61,8 @@ public class AttackActivity extends Activity {
 		
 		//Show Spinner
         spinner = new ProgressDialog(this);
-		spinner.setMessage("Loading Attacks...");
+		spinner.setMessage("Loading Incidents...");
+		spinner.setCancelable(false);
 		spinner.show();
 		
 		//Get json data from server
@@ -70,7 +71,7 @@ public class AttackActivity extends Activity {
 	}
 	
 	@Override
-	protected void onPause() {
+	protected void onStop() {
 		//AdMob
 		if (adView != null) {
 			adView.pause();
@@ -80,7 +81,7 @@ public class AttackActivity extends Activity {
 		for(GetInfoTask t: jsonTasks) {t.cancel(true);}
 		jsonTasks.clear();
 		
-		super.onPause();
+		super.onStop();
 	}	
 	
 	@Override

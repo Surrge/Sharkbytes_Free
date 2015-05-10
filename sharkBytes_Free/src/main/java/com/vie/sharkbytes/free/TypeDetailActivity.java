@@ -62,12 +62,13 @@ public class TypeDetailActivity extends Activity {
 	}
 	
 	@Override
-	protected void onResume() {
-		super.onResume();
+	protected void onStart() {
+		super.onStart();
 		
 		//Show Spinner
         spinner = new ProgressDialog(this);
 		spinner.setMessage("Loading " + type + " Sharks...");
+		spinner.setCancelable(false);
 		spinner.show();
 		
 		//Get json data from server
@@ -81,7 +82,7 @@ public class TypeDetailActivity extends Activity {
 	}
 	
 	@Override
-	protected void onPause() {
+	protected void onStop() {
 		//AdMob
 		if (adView != null) {
 			adView.pause();
@@ -93,7 +94,7 @@ public class TypeDetailActivity extends Activity {
 		jsonTasks.clear();
 		downloadTasks.clear();
 		
-		super.onPause();
+		super.onStop();
 	}	
 	
 	@Override

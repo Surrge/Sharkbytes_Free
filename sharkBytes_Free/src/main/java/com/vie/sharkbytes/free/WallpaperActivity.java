@@ -33,14 +33,14 @@ public class WallpaperActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallpaper);
-        this.setTitle("Wallpapers");
+        this.setTitle(R.string.wallpaper_main_text);
         
         gridView = (GridView) findViewById(R.id.gridview);
 
         // GoogleAnalytics, log screen and view
         if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getApplicationContext()) == ConnectionResult.SUCCESS) {
             googleAnalyticsTracker = ((Global) getApplication()).getTracker(Global.TrackerName.APP_TRACKER);
-            googleAnalyticsTracker.setScreenName("Wallpaper Screen");
+            googleAnalyticsTracker.setScreenName("Wallpapers");
             googleAnalyticsTracker.send(new HitBuilders.AppViewBuilder().build());
         }
         else {
@@ -57,8 +57,8 @@ public class WallpaperActivity extends Activity {
 	}
 	
 	@Override
-	protected void onResume() {
-		super.onResume();
+	protected void onStart() {
+		super.onStart();
 		
 		//AdMob
 		if (adView != null) {
@@ -75,7 +75,7 @@ public class WallpaperActivity extends Activity {
 	}
 	
 	@Override
-	protected void onPause() {
+	protected void onStop() {
 		//AdMob
 		if (adView != null) {
 			adView.pause();
@@ -87,7 +87,7 @@ public class WallpaperActivity extends Activity {
 		jsonTasks.clear();		
 		downloadTasks.clear();
 		
-		super.onPause();
+		super.onStop();
 	}	
 	
 	@Override

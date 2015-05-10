@@ -29,14 +29,14 @@ public class FactActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fact);
-        this.setTitle("Shark Facts");
+        this.setTitle(R.string.fact_main_text);
         
         factLayout = (LinearLayout) findViewById(R.id.factLayout);
 
         // GoogleAnalytics, log screen and view
         if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getApplicationContext()) == ConnectionResult.SUCCESS) {
             Tracker t = ((Global) getApplication()).getTracker(Global.TrackerName.APP_TRACKER);
-            t.setScreenName("Shark Facts Screen");
+            t.setScreenName("Shark Facts");
             t.send(new HitBuilders.AppViewBuilder().build());
         }
         
@@ -50,9 +50,9 @@ public class FactActivity extends Activity {
 	}
 	
 	@Override
-	protected void onResume() {
-		super.onResume();
-		
+	protected void onStart() {
+		super.onStart();
+
 		//AdMob
 		if (adView != null) {
 			adView.resume();
@@ -69,7 +69,7 @@ public class FactActivity extends Activity {
 	}
 	
 	@Override
-	protected void onPause() {
+	protected void onStop() {
 		//AdMob
 		if (adView != null) {
 			adView.pause();
@@ -79,7 +79,7 @@ public class FactActivity extends Activity {
 		for(GetInfoTask t: jsonTasks) {t.cancel(true);}
 		jsonTasks.clear();
 		
-		super.onPause();
+		super.onStop();
 	}	
 	
 	@Override

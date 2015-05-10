@@ -32,12 +32,19 @@ public class HowToActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_howto);
-        this.setTitle("Avoiding Shark Attacks");
+        this.setTitle(R.string.tips_main_text);
         
         Bundle extras = getIntent().getExtras();
         activityCategoryStr = extras.getString("attack");
         
         howtoLayout = (LinearLayout) findViewById(R.id.howtoLayout);
+
+		//GoogleAnalytics, log screen and view
+		if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getApplicationContext()) == ConnectionResult.SUCCESS) {
+			Tracker t = ((Global) getApplication()).getTracker(Global.TrackerName.APP_TRACKER);
+			t.setScreenName("Tips - " + activityCategoryStr);
+			t.send(new HitBuilders.AppViewBuilder().build());
+		}
         
         //AdMob
         adView = (AdView) findViewById(R.id.adView);
@@ -49,8 +56,8 @@ public class HowToActivity extends Activity {
 	}
 	
 	@Override
-	protected void onResume() {
-		super.onResume();
+	protected void onStart() {
+		super.onStart();
 		
 		//AdMob
 		if (adView != null) {
@@ -59,7 +66,8 @@ public class HowToActivity extends Activity {
 		
 		//Show Spinner
         spinner = new ProgressDialog(this);
-		spinner.setMessage("Loading Data...");
+		spinner.setMessage("Loading...");
+		spinner.setCancelable(false);
 		spinner.show();
 		
 		//Get json data from server
@@ -68,7 +76,7 @@ public class HowToActivity extends Activity {
 	}
 	
 	@Override
-	protected void onPause() {
+	protected void onStop() {
 		//AdMob
 		if (adView != null) {
 			adView.pause();
@@ -78,7 +86,7 @@ public class HowToActivity extends Activity {
 		for(GetInfoTask t: jsonTasks) {t.cancel(true);}
 		jsonTasks.clear();
 		
-		super.onPause();
+		super.onStop();
 	}	
 	
 	@Override
@@ -110,13 +118,6 @@ public class HowToActivity extends Activity {
 					
 					howtoLayout.addView(view);
 					howtoLayout.refreshDrawableState();
-
-                    // GoogleAnalytics, log screen and view
-                    if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getApplicationContext()) == ConnectionResult.SUCCESS) {
-                        Tracker t = ((Global) getApplication()).getTracker(Global.TrackerName.APP_TRACKER);
-                        t.setScreenName("Avoiding Attacks - " + activityCategoryStr);
-                        t.send(new HitBuilders.AppViewBuilder().build());
-                    }
 				}
 			}
 		}

@@ -45,7 +45,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@color/blue1"
-                android:text="@string/type_button" />
+                android:text="@string/identification_main_text" />
 
             <Button
                 android:id="@+id/buttonFacts"
@@ -54,7 +54,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@color/blue2"
-                android:text="@string/fact_button" />
+                android:text="@string/fact_main_text" />
 
             <Button
                 android:id="@+id/buttonAttacks"
@@ -63,7 +63,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@color/blue3"
-                android:text="@string/attack_button" />
+                android:text="@string/incidents_main_text" />
 
             <ImageView
                 android:id="@+id/buttonSearch"
@@ -71,7 +71,7 @@
                 android:layout_height="0dp"
                 android:layout_margin="5dp"
                 android:layout_weight="3"
-                android:contentDescription="@string/search_button"
+                android:contentDescription="@string/search_beach_main_text"
                 android:src="@drawable/searchbutton" />
 
             <Button
@@ -81,7 +81,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@color/blue4"
-                android:text="@string/howto_button" />
+                android:text="@string/tips_main_text" />
 
             <Button
                 android:id="@+id/buttonSave"
@@ -90,7 +90,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@color/blue5"
-                android:text="@string/save_button" />
+                android:text="@string/save_main_text" />
 
             <Button
                 android:id="@+id/buttonWallpaper"
@@ -99,7 +99,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@color/blue6"
-                android:text="@string/wallpaper_button" />
+                android:text="@string/wallpaper_main_text" />
 
             <Button
                 android:id="@+id/buttonPuzzle"
@@ -108,7 +108,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@color/blue7"
-                android:text="@string/puzzle_button" />
+                android:text="@string/puzzle_main_text" />
 
     </LinearLayout>
     

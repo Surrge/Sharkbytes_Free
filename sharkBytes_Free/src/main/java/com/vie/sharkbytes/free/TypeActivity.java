@@ -31,14 +31,14 @@ public class TypeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_type);
-        this.setTitle("Shark Types");
+        this.setTitle(R.string.identification_main_text);
         
         typeLayout = (LinearLayout) findViewById(R.id.typeLayout);
 
         // GoogleAnalytics, log screen and view
         if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getApplicationContext()) == ConnectionResult.SUCCESS) {
             Tracker t = ((Global) getApplication()).getTracker(Global.TrackerName.APP_TRACKER);
-            t.setScreenName("Shark Types - Menu");
+            t.setScreenName("Shark Identification");
             t.send(new HitBuilders.AppViewBuilder().build());
         }
 
@@ -52,42 +52,37 @@ public class TypeActivity extends Activity {
 	}
 	
 	@Override
-	protected void onResume() {
-		super.onResume();
+	protected void onStart() {
+		super.onStart();
 		
 		//AdMob
 		if (adView != null) {
 			adView.resume();
 	    }
-		
 
 		//Show Spinner
-        spinner = new ProgressDialog(this);
-		spinner.setMessage("Loading Types...");
+		spinner = new ProgressDialog(this);
+		spinner.setMessage("Loading Sharks...");
+		spinner.setCancelable(false);
 		spinner.show();
-		
+
 		//Get json data from server
 		typeLayout.removeAllViews();
-        jsonTasks.add((GetInfoTask) new GetInfoTask(this).execute("getTypes", ""));
+		jsonTasks.add((GetInfoTask) new GetInfoTask(this).execute("getTypes", ""));
 	}
 	
 	@Override
-	protected void onPause() {
+	protected void onStop() {
 		//AdMob
 		if (adView != null) {
 			adView.pause();
 	    }
-		
-		super.onPause();
-	}
-	
-	@Override
-	public void onStop() {
+
 		//Cancel threads while reference is valid
 		for(GetInfoTask t: jsonTasks) {t.cancel(true);}
 		jsonTasks.clear();
-				
-		super.onDestroy();
+
+		super.onStop();
 	}
 	
 	@Override

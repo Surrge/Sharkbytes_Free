@@ -1,129 +1,45 @@
 package com.vie.sharkbytes.free;
 
-import java.util.ArrayList;
-
-import org.json.JSONArray;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.os.Build;
 import android.os.Bundle;
-import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-
-
-
-
-
 public class SaveActivity extends Activity {
-	LinearLayout saveLayout;
-	AdView adView;
-	ProgressDialog spinner;
-	ArrayList<GetInfoTask> jsonTasks = new ArrayList<GetInfoTask>();
-	
+	WebView saveView;
+
+	@SuppressLint("SetJavaScriptEnabled")
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_save);
-        this.setTitle("Save The Shark");
-        
-        saveLayout = (LinearLayout) findViewById(R.id.saveLayout);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_save);
+		this.setTitle(R.string.save_main_text);
 
-        // GoogleAnalytics, log screen and view
-        if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getApplicationContext()) == ConnectionResult.SUCCESS) {
-            Tracker t = ((Global) getApplication()).getTracker(Global.TrackerName.APP_TRACKER);
-            t.setScreenName("Save Shark Screen");
-            t.send(new HitBuilders.AppViewBuilder().build());
-        }
-        
-        //AdMob
-        adView = (AdView) findViewById(R.id.adView);
-        //adView.setAdListener(new ToastAdListener(this));
-        AdRequest adRequest = new AdRequest.Builder()
-	    	.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-	    	.build();
-	    adView.loadAd(adRequest);
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		
-		//AdMob
-		if (adView != null) {
-			adView.resume();
-	    }
-		
-		//Show Spinner
-        spinner = new ProgressDialog(this);
-		spinner.setMessage("Loading Data...");
-		spinner.show();
-		
-		//Get json data from server
-		saveLayout.removeAllViews();
-        jsonTasks.add((GetInfoTask) new GetInfoTask(this).execute("getSave", ""));
-	}
-	
-	@Override
-	protected void onPause() {
-		//AdMob
-		if (adView != null) {
-			adView.pause();
-	    }
-				
-		//Cancel threads while reference is valid
-		for(GetInfoTask t: jsonTasks) {t.cancel(true);}
-		jsonTasks.clear();
-		
-		super.onPause();
-	}	
-	
-	@Override
-	public void onDestroy() {
-		//AdMob
-		if (adView != null) {
-			adView.destroy();
+		saveView = (WebView) findViewById(R.id.saveWebView);
+		saveView.clearCache(true);
+		saveView.setBackgroundColor(getResources().getColor(R.color.white_trans));
+
+		WebSettings webSettings = saveView.getSettings();
+		webSettings.setJavaScriptEnabled(true);
+
+		if (Build.VERSION.SDK_INT >= 11) {
+			saveView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 		}
-		
-		super.onDestroy();
-	}
-	
-	public void onTaskFinish(GetInfoTask task, String data) {
-		jsonTasks.remove(task);
-		
-		try {
-			JSONArray json = new JSONArray(data);
-			for(int i = 0; i < json.length(); i++) {
-				//Add tile
-				LayoutInflater inflater = LayoutInflater.from(this);
-				View view = inflater.inflate(R.layout.save_tile, null);
-				WebView saveWeb = (WebView) view.findViewById(R.id.webSave);
-				saveWeb.loadData(Html.fromHtml(json.getJSONObject(i).getString("save")).toString(), "text/html", "UTF-8");
-				//fix flicker bug
-				saveWeb.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-				
-				saveLayout.addView(view);
-				saveLayout.refreshDrawableState();
-			}
+
+		// GoogleAnalytics, log screen and view
+		if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getApplicationContext()) == ConnectionResult.SUCCESS) {
+			Tracker t = ((Global) getApplication()).getTracker(Global.TrackerName.APP_TRACKER);
+			t.setScreenName("Save Sharks");
+			t.send(new HitBuilders.AppViewBuilder().build());
 		}
-		catch(Exception e) {
-			e.printStackTrace();
-			Toast.makeText(this, "Problem retrieving data", Toast.LENGTH_LONG).show();
-		}
-		
-		//Dismiss Spinner if done
-		if(jsonTasks.isEmpty() && spinner != null && spinner.isShowing()) {
-			spinner.dismiss();
-		}
+
+		saveView.loadUrl("http://www.sharkbytes.co/mobilesavesharks.php");
 	}
 }
