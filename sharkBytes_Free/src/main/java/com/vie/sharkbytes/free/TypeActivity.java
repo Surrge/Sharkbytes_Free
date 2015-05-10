@@ -2,6 +2,7 @@ package com.vie.sharkbytes.free;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.json.JSONArray;
 
@@ -60,15 +61,46 @@ public class TypeActivity extends Activity {
 			adView.resume();
 	    }
 
-		//Show Spinner
-		spinner = new ProgressDialog(this);
-		spinner.setMessage("Loading Sharks...");
-		spinner.setCancelable(false);
-		spinner.show();
+		if(((Global) getApplication()).EmptySharkTypesCache()) {
+			//Show Spinner
+			spinner = new ProgressDialog(this);
+			spinner.setMessage("Loading Sharks...");
+			spinner.setCancelable(false);
+			spinner.show();
 
-		//Get json data from server
-		typeLayout.removeAllViews();
-		jsonTasks.add((GetInfoTask) new GetInfoTask(this).execute("getTypes", ""));
+			//Get json data from server
+			jsonTasks.add((GetInfoTask) new GetInfoTask(this).execute("getTypes", ""));
+		} else if (typeLayout.getChildCount() == 0){
+			//Load data from cache, should never happen
+			List<String> SharkTypes = ((Global) getApplication()).GetCachedSharkTypes();
+
+			for(int i = 0; i < SharkTypes.size(); i++) {
+				final String currentType = SharkTypes.get(i);
+
+				LayoutInflater inflater = LayoutInflater.from(this);
+				View view = inflater.inflate(R.layout.type_tile, null);
+
+				TextView textType = (TextView) view.findViewById(R.id.textType);
+				textType.setText(currentType);
+				//OnClick, get details
+				view.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(TypeActivity.this, TypeDetailActivity.class);
+						intent.putExtra("type", currentType);
+						startActivity(intent);
+					}
+				});
+
+				typeLayout.addView(view);
+				typeLayout.refreshDrawableState();
+			}
+
+			//Dismiss Spinner
+			if(spinner != null && spinner.isShowing()) {
+				spinner.dismiss();
+			}
+		}
 	}
 	
 	@Override
@@ -132,6 +164,9 @@ public class TypeActivity extends Activity {
 				typeLayout.addView(view);
 				typeLayout.refreshDrawableState();
 			}
+
+			//Save to cache
+			((Global)getApplication()).SetCachedSharkTypes(formatted_data);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
